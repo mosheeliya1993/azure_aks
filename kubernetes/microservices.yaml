@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mynamespace
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice1
+  namespace: mynamespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microservice1
+  template:
+    metadata:
+      labels:
+        app: microservice1
+    spec:
+      containers:
+        - name: microservice1
+          image: myregistry.azurecr.io/microservice1:latest
+---
+#... Other microservices

@@ -1,0 +1,11 @@
+---
+- name: Create Namespace for Microservices
+  k8s:
+    kubeconfig: "{{ kubeconfig }}"
+    definition: "{{ lookup('file', 'kubernetes/microservices-namespace.yaml') }}"
+
+- name: Deploy Microservices
+  k8s:
+    kubeconfig: "{{ kubeconfig }}"
+    namespace: mynamespace
+    definition: "{{ lookup('file', 'kubernetes/microservices.yaml') }}"

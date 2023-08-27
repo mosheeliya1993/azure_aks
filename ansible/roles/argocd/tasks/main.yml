@@ -1,0 +1,29 @@
+---
+- name: Create Namespace for ArgoCD
+  k8s:
+    kubeconfig: "{{ kubeconfig }}"
+    definition: "{{ lookup('file', 'kubernetes/argocd-namespace.yaml') }}"
+
+- name: Deploy ArgoCD
+  k8s:
+    kubeconfig: "{{ kubeconfig }}"
+    namespace: argocd
+    definition: "{{ lookup('file', 'kubernetes/argocd.yaml') }}"
+
+- name: Wait for ArgoCD server to be ready
+  k8s_info:
+    kubeconfig: "{{ kubeconfig }}"
+    namespace: argocd
+    kind: Pod
+    label_selectors:
+      - app.kubernetes.io/name=argocd-server
+  register: argocd_server
+  until: argocd_server.resources[0].status.phase == "Running"
+  retries: 60
+  delay: 10
+
+- name: Deploy "App of Apps" Application
+  k8s:
+    kubeconfig: "{{ kubeconfig }}"
+    namespace: argocd
+    definition: "{{ lookup('file', 'applications/app-of-apps.yaml') }}"

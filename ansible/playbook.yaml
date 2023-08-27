@@ -1,0 +1,14 @@
+- name: Deploy ArgoCD and Microservices
+  hosts: localhost
+  tasks:
+    - name: Deploy ArgoCD
+      k8s:
+        kubeconfig: "{{ kubeconfig }}"
+        namespace: argocd
+        src: argocd.yaml
+
+    - name: Deploy Microservices
+      k8s:
+        kubeconfig: "{{ kubeconfig }}"
+        namespace: mynamespace
+        src: microservices.yaml
